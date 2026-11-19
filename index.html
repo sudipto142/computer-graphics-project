@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#031b35">
+  <title>AquaWorld 3D | Explore the Deep</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="loading-screen">
+    <div class="loader-mark">A<span>Q</span></div>
+    <div class="loader-line"><i></i></div>
+    <p>PREPARING YOUR OCEAN</p>
+  </div>
+
+  <main class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="AquaWorld home">
+        <span class="brand-icon">✳</span>
+        <span>AQUA<span class="brand-light">WORLD</span><small>3D OCEAN EXPLORER</small></span>
+      </a>
+      <div class="top-status"><span class="live-dot"></span> LIVE OCEAN SIMULATION</div>
+      <button class="icon-button sound-button" id="soundBtn" title="Toggle ambient sound" aria-label="Toggle sound">♫</button>
+    </header>
+
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow"><span></span> AN INTERACTIVE UNDERWATER EXPERIENCE</div>
+        <h1>Discover the<br><em>blue unknown.</em></h1>
+        <p class="intro">Dive beneath the surface and explore a living 3D ocean. Meet its inhabitants, discover hidden reefs and experience the beauty of the deep.</p>
+        <div class="hero-actions">
+          <button class="primary-button" id="exploreBtn">Explore the ocean <span>↘</span></button>
+          <div class="scroll-hint"><span class="mouse-icon"></span> DRAG TO LOOK AROUND</div>
+        </div>
+      </div>
+      <div class="hero-stats">
+        <div><strong>70<span>%</span></strong><small>OF EARTH IS OCEAN</small></div>
+        <div><strong>深</strong><small>ENDLESS MYSTERY</small></div>
+      </div>
+    </section>
+
+    <section class="ocean-stage" id="oceanStage">
+      <div class="stage-topline"><span><i class="live-dot"></i> UNDERWATER VIEW</span><span id="viewLabel">REEF ZONE · 12M</span></div>
+      <div id="canvas-container">
+        <div class="scene-vignette"></div>
+        <div class="crosshair">+</div>
+        <div class="scene-caption"><span class="caption-line"></span><span id="sceneCaption">THE CORAL GARDEN</span></div>
+        <div class="scene-controls">
+          <button class="control-chip active" id="dayBtn">☼ Daylight</button>
+          <button class="control-chip" id="nightBtn">☾ Night</button>
+          <button class="control-chip" id="pauseBtn">Ⅱ Pause</button>
+          <button class="control-chip" id="feedBtn">✦ Feed fish</button>
+          <button class="control-chip" id="resetBtn">↺ Reset view</button>
+        </div>
+        <div class="stage-help">DRAG TO ROTATE <span>·</span> SCROLL TO ZOOM</div>
+      </div>
+      <div class="stage-footer">
+        <span><b class="tiny-pulse"></b> 3D ENVIRONMENT ACTIVE</span>
+        <span>BUILT WITH THREE.JS · WEBGL</span>
+      </div>
+    </section>
+
+    <section class="discover-section">
+      <div class="section-heading">
+        <div><div class="eyebrow">LIFE BELOW THE SURFACE</div><h2>Meet the <em>ocean life.</em></h2></div>
+        <p>Every creature has a role in keeping the underwater ecosystem alive.</p>
+      </div>
+      <div class="creature-grid">
+        <article class="creature-card"><div class="creature-art fish-art">🐠</div><div class="card-meta">01 / REEF RESIDENT</div><h3>Clownfish</h3><p>Small, bright and full of character. Clownfish shelter among the tentacles of sea anemones.</p></article>
+        <article class="creature-card"><div class="creature-art turtle-art">🐢</div><div class="card-meta">02 / GENTLE TRAVELLER</div><h3>Sea Turtle</h3><p>Ancient ocean travellers that glide gracefully through warm tropical waters.</p></article>
+        <article class="creature-card"><div class="creature-art jelly-art">🪼</div><div class="card-meta">03 / DEEP SEA DRIFTER</div><h3>Jellyfish</h3><p>Translucent drifters that pulse through the water with an otherworldly glow.</p></article>
+      </div>
+    </section>
+
+    <section class="mission-strip">
+      <div class="mission-symbol">◉</div>
+      <div><div class="eyebrow">OUR OCEAN, OUR RESPONSIBILITY</div><h2>Protect what we <em>don't yet know.</em></h2><p>Healthy oceans support life on Earth. Explore, learn and help protect marine ecosystems.</p></div>
+      <a href="https://oceanservice.noaa.gov/" target="_blank" rel="noreferrer">LEARN ABOUT OUR OCEANS ↗</a>
+    </section>
+
+    <footer><a class="brand footer-brand" href="#"><span class="brand-icon">✳</span><span>AQUA<span class="brand-light">WORLD</span><small>3D OCEAN EXPLORER</small></span></a><span>AN INTERACTIVE COMPUTER GRAPHICS PROJECT</span><span>© 2026 AQUAWORLD</span></footer>
+  </main>
+  <script type="module" src="script.js"></script>
+</body>
+</html>
