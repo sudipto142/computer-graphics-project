@@ -1,5 +1,23 @@
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
-import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+
+// Show useful feedback instead of leaving the loading overlay spinning forever.
+function showStartupError(message) {
+  const loading = document.getElementById('loading-screen');
+  if (!loading) return;
+  loading.classList.remove('done');
+  loading.innerHTML = `<div class="loader-mark">A<span>Q</span></div>
+    <p class="startup-error">${message}</p>
+    <p>Check your internet connection and use a local web server.</p>`;
+}
+window.addEventListener('error', (event) => {
+  console.error('AquaWorld runtime error:', event.error || event.message);
+  showStartupError('The 3D scene could not start. See the browser console for details.');
+});
+window.addEventListener('unhandledrejection', (event) => {
+  console.error('AquaWorld module error:', event.reason);
+  showStartupError('A required module could not load. Check your internet connection.');
+});
 
 const container = document.getElementById('canvas-container');
 const scene = new THREE.Scene();
@@ -14,8 +32,10 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.15;
 container.prepend(renderer.domElement);
 
+renderer.domElement.style.touchAction = 'none';
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true; controls.dampingFactor = .045;
+controls.enablePan = false;
 controls.minDistance = 10; controls.maxDistance = 42;
 controls.maxPolarAngle = Math.PI*.88; controls.target.set(0,2,0);
 
@@ -71,7 +91,37 @@ document.getElementById('feedBtn').onclick=feedFish;
 document.getElementById('resetBtn').onclick=()=>{camera.position.set(0,8,25);controls.target.set(0,2,0);controls.update();};
 document.getElementById('exploreBtn').onclick=()=>document.getElementById('oceanStage').scrollIntoView({behavior:'smooth'});
 document.getElementById('soundBtn').onclick=()=>{const b=document.getElementById('soundBtn');b.textContent=b.textContent==='♫'?'♪':'♫';b.title='Visual demo: ambient audio is not enabled';};
-function animate(){requestAnimationFrame(animate);const dt=Math.min(clock.getDelta(),.04);if(!paused){elapsed+=dt;fishGroups.forEach(({mesh,origin,speed,phase,range})=>{const t=elapsed*speed+phase;mesh.position.x=origin.x+Math.sin(t)*range;mesh.position.y=origin.y+Math.sin(t*1.8)*.45;mesh.position.z=origin.z+Math.cos(t*.7)*1.5;mesh.rotation.y=Math.cos(t)*.18;mesh.userData.tail.rotation.y=Math.sin(t*9)*.48;});bubbles.forEach(({mesh,speed,drift})=>{mesh.position.y+=speed*dt;mesh.position.x+=Math.sin(elapsed+drift)*dt*.12;if(mesh.position.y>13){mesh.position.y=-4;mesh.position.x=(Math.random()-.5)*40;}});jellyGroup.position.y=5+Math.sin(elapsed*1.2)*.5;jellyGroup.rotation.z=Math.sin(elapsed)*.08;beams.rotation.y=Math.sin(elapsed*.12)*.05;food.forEach((f,i)=>{f.life+=dt;f.mesh.position.y-=dt*.6;f.mesh.position.x+=Math.sin(f.life*3+i)*dt*.15;if(f.life>7){scene.remove(f.mesh);food.splice(i,1);}});}controls.update();renderer.render(scene,camera);}
+function animate(){requestAnimationFrame(animate);const dt=Math.min(clock.getDelta(),.04);if(!paused){elapsed+=dt;fishGroups.forEach(({mesh,origin,speed,phase,range})=>{const t=elapsed*speed+phase;mesh.position.x=origin.x+Math.sin(t)*range;mesh.position.y=origin.y+Math.sin(t*1.8)*.45;mesh.position.z=origin.z+Math.cos(t*.7)*1.5;mesh.rotation.y=Math.cos(t)*.18;mesh.userData.tail.rotation.y=Math.sin(t*9)*.48;});bubbles.forEach(({mesh,speed,drift})=>{mesh.position.y+=speed*dt;mesh.position.x+=Math.sin(elapsed+drift)*dt*.12;if(mesh.position.y>13){mesh.position.y=-4;mesh.position.x=(Math.random()-.5)*40;}});jellyGroup.position.y=5+Math.sin(elapsed*1.2)*.5;jellyGroup.rotation.z=Math.sin(elapsed)*.08;beams.rotation.y=Math.sin(elapsed*.12)*.05;for (let i = food.length - 1; i >= 0; i--) {
+  const f = food[i];
+  f.life += dt;
+  f.mesh.position.y -= dt * .6;
+  f.mesh.position.x += Math.sin(f.life * 3 + i) * dt * .15;
+  if (f.life > 7) {
+    scene.remove(f.mesh);
+    f.mesh.geometry.dispose();
+    f.mesh.material.dispose();
+    food.splice(i, 1);
+  }
+}}controls.update();renderer.render(scene,camera);}
 const clock=new THREE.Clock();animate();
-const resizeObserver=new ResizeObserver(()=>{const w=container.clientWidth,h=container.clientHeight;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h);renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));});resizeObserver.observe(container);
-window.addEventListener('load',()=>setTimeout(()=>document.getElementById('loading-screen').classList.add('done'),450));
+function resizeScene() {
+  const w = Math.max(container.clientWidth, 1);
+  const h = Math.max(container.clientHeight, 1);
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+}
+if (typeof ResizeObserver !== 'undefined') {
+  const resizeObserver = new ResizeObserver(resizeScene);
+  resizeObserver.observe(container);
+} else {
+  window.addEventListener('resize', resizeScene);
+}
+resizeScene();
+window.addEventListener('load', () => {
+  window.setTimeout(() => {
+    const loading = document.getElementById('loading-screen');
+    if (loading) loading.classList.add('done');
+  }, 450);
+});
